@@ -40,8 +40,7 @@ The first 9 variables are:
 
 The raw data originally collected and used in this project is described in the UCI HAR Dataset is found in that directory or in the associated ZIP file within the files:
 
-The dataset includes the following files:
-=========================================
+### The dataset includes the following files:
 
 - 'README.txt'
 
