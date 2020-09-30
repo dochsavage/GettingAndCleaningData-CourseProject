@@ -20,7 +20,7 @@ Data file containing the mean and standard deviation values of both forces detec
 #### tidy.csv
 Data file containing the averaged means and averaged standard deviations for each test subject and their performed activity as a crosstab.
 
-## Variable List
+### Variable List
 The complete list of 88 variables provided in each output dataset is available in
 - 'VariableDescriptions-AveragedData.txt'
 
@@ -35,12 +35,11 @@ The first 9 variables are:
 - 'totalbodyaccelerationstddevz'
 - 'totalgravityaccelerationmeanx'
 
-Notes: 
-======
-- Data are normalized and bounded within [-1,1].
 
-### Raw Data from UCI HAR Dataset
+## Raw Data from UCI HAR Dataset
+
 The raw data originally collected and used in this project is described in the UCI HAR Dataset is found in that directory or in the associated ZIP file within the files:
+
 The dataset includes the following files:
 =========================================
 
@@ -60,6 +59,8 @@ The dataset includes the following files:
 
 - 'test/y_test.txt': Test labels.
 
+## Notes: 
+- Data are normalized and bounded within [-1,1].
 
 # Acknowledgement
 [1] Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
