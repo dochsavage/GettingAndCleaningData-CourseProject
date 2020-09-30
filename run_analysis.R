@@ -139,7 +139,7 @@ tidyData <- function(data = NA,
     dataAveraged <- acast(dataMolten, activity + subject ~ variable,  mean)
     #Export data
     if(!file.exists(directory)) { dir.create(directory)}
-    write.table(dataAveraged,file=paste0(directory,"/",exportfile))
+    write.table(dataAveraged,file=paste0(directory,"/",exportfile), row.name=FALSE)
   } else {
     print("tidyData: No data provided.")
   }
