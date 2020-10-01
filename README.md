@@ -33,6 +33,6 @@ A procedure describing the steps taken to arrive at tidy.txt is provided below a
 ## CodeBook.md
 
 CodeBook.md contains the following: 
-### a detailed description of the initial dataset, 
-### a more detailed description of the processing procedure, and 
-### a complete list of variables (along with their units) that are present in tidy.txt.
+* a detailed description of the initial dataset, 
+* a more detailed description of the processing procedure, and 
+* a complete list of variables (along with their units) that are present in tidy.txt.
