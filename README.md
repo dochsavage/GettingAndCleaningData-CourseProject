@@ -1,65 +1,38 @@
 # GettingAndCleaningData-CourseProject
-Coursera-GettingAndCleaningData-CourseProject:  Accelerometer &amp; Gyro data from phone testing.
+##Accelerometer &amp; Gyro data from phone testing.
 
-# Variables
+This repository contains the UCI HAR dataset, which is the starting point for the analysis.
+Executing the run_analysis.R logic above the unzipped UCI HAR dataset will perform the analysis.
 
-## Input Data
+## tidydata.txt
 
-### UCI HAR Dataset
-This dataset is comprised of sensor readings and calculated data from those readings from a set of 30 individuals who performed a set of defined actions while wearing a device with both accelerators and gyroscopes which can determine direction and intensity of applied forces including gravity.
-The details of that original data can be found in the UCI HAR Dataset file "README.txt".
+tidydata.txt is the end result file.  It represents the averaged means of the original physical data variables, factored over each Test Subject, and the Activity performed by that Test Subject.  It should be noted that this averaged data does not include any variables that were not means or standard deviation data in the original data set.
 
+There are 86 data variables measuring various accelerations, orientations (gyro), jerk accelerations, jerk orientations, etc.
+Details of the data variables will be found in the CodeBook.md.
 
-## Output Data
-Output files are found in the /output directory.
+## run_analysis.R
 
-### Averaged Data
-#### combined.csv
-Data file containing the mean and standard deviation values of both forces detected and calculated taken over the course of testing by the test subjects for a set of 6 types of actions.  Some calculated values are directional in the x, y, and z directions. Only the means and standard deviation values are provided here; the other values observed were deliberately omitted in this dataset.
+This R program is the logic used to process the original UCI dataset into a combined, tidied subset, which is then further processed by melting, then casting the data into the form found in tidydata.txt. The details of the logic are described in CodeBook.md.
 
-#### tidy.csv
-Data file containing the averaged means and averaged standard deviations for each test subject and their performed activity as a crosstab.
+A procedure describing the steps taken to arrive at tidy.txt is provided below and in codebook.txt.
 
-### Variable List
-The complete list of 88 variables provided in each output dataset is available in
-- 'VariableDescriptions-AveragedData.txt'
+* Loads the data for the specified data set from the original research files.
+* The Column names were then processed into a more standard, then a more readable, set of names.
+* The Subject, Activity (number), and Activity Data data frames were combined such that the columns proceeded thus:
+* The readible Column names vector was then applied to the combined data frame.
+* A subset of the column names was created by selecting for those containing "mean" or "stddev".  The column names of "subject" and "activitynbr" were then added to the beginning of the vector.  The end-result was a list of the desired columns in requirement #2.  However, note that the Activity factor remains an integer value at this point.
+* The combined data set produced above was then subsetted by selecting on that list of desired column names.
+* The next step adds a new "activity" column based on the Activity table (File type "_y") as a character factor.
+* The colnames list was then manipulated such that "activity" was the 2nd column name, and the now extraneous training "activity" column was removed.
+* A final select of the dataset using the updated desired column names list produces the data with the Activity column as a character factor.
+* The combined dataset is then processed by the tidydata function.
+* Using the library "reshape2", the function calls the reshape2::melt function to melt the data set.
+* Calls acast to cast the molten data into a multidimensional array, using the activity and subject columns as factors against the mean values of the variables. 
 
-The first 9 variables are:
-- 'subject'
-- 'activity'
-- 'totalbodyaccelerationmeanx'
-- 'totalbodyaccelerationmeany'
-- 'totalbodyaccelerationmeanz'
-- 'totalbodyaccelerationstddevx'
-- 'totalbodyaccelerationstddevy'
-- 'totalbodyaccelerationstddevz'
-- 'totalgravityaccelerationmeanx'
+## CodeBook.md
 
-
-## Raw Data from UCI HAR Dataset
-
-The raw data originally collected and used in this project is described in the UCI HAR Dataset is found in that directory or in the associated ZIP file within the files:
-
-### The dataset includes the following files:
-
-- 'README.txt'
-
-- 'features_info.txt': Shows information about the variables used on the feature vector.
-
-- 'features.txt': List of all features.
-
-- 'activity_labels.txt': Links the class labels with their activity name.
-
-- 'train/X_train.txt': Training set.
-
-- 'train/y_train.txt': Training labels.
-
-- 'test/X_test.txt': Test set.
-
-- 'test/y_test.txt': Test labels.
-
-## Notes: 
-- Data are normalized and bounded within [-1,1].
-
-# Acknowledgement
-[1] Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
+CodeBook.md contains the following: 
+### a detailed description of the initial dataset, 
+### a more detailed description of the processing procedure, and 
+### a complete list of variables (along with their units) that are present in tidy.txt.
