@@ -4,7 +4,7 @@
 # Course:     Getting and Cleaning Data
 # Assignment: Course Project
 #
-# Summary:  This project analyzes the accelerometer and gyrometerdata produced 
+# Summary:  This project analyzes the accelerometer and gyrometer data produced 
 #           from a smartphone.
 #
 ###############################################################################
@@ -13,7 +13,7 @@ prettyname <- function(originalColumnName = "tbodyaccmeanx") {
   if(length(originalColumnName)>0) {
     newname <- originalColumnName
     if( as.integer(regexpr("^[t]",originalColumnName))>0 ) {
-      newname <- sub("t","total",newname)
+      newname <- sub("t","time",newname)
     }
     if( as.integer(regexpr("^[f]",originalColumnName))>0 ) {
       newname <- sub("f","frequency",newname)
@@ -32,6 +32,7 @@ prettyname <- function(originalColumnName = "tbodyaccmeanx") {
   }
 }
 
+##########################################################################
 processData <- function(directory = "./UCI HAR Dataset", 
                         datatype = "test",
                         debug = FALSE) 
@@ -66,7 +67,7 @@ processData <- function(directory = "./UCI HAR Dataset",
   if( debug ) print(paste("length(vectorColumnNames)=",length(vectorColumnNames)))
   if( debug ) print(paste("length(unique(vectorColumnNames))=",length(unique(vectorColumnNames))))
   
-  # Substitute comma with "n"to" to preserve ranges in names.
+  # Substitute comma with "n" to preserve ranges in names.
   vectorColumnNames2 <- gsub(x = vectorColumnNames,",","to")
   vectorColumnNames3 <- stringr::str_replace(vectorColumnNames2, "[()-]([0-9])","from\\1")
   # remove punctuation marks 
@@ -75,7 +76,7 @@ processData <- function(directory = "./UCI HAR Dataset",
   vectorColumnNames5 <- tolower(vectorColumnNames4)
   # Apply descriptive variable names
   vectorColumnNames6 <- unlist(lapply(vectorColumnNames5,prettyname))
-  if( debug ) print(vectorColumnNames6)
+  ### if( debug ) print(vectorColumnNames6)
   vectorColumnNames <- c("subject","activitynbr",vectorColumnNames6)
   
   # Assemble Data by adding columns.
@@ -107,15 +108,15 @@ processData <- function(directory = "./UCI HAR Dataset",
   data_final <- select(data3, all_of(colnames_list))
   data_final
 }
-
+##########################################################################
 combineData <- function(data = NA, 
-                        exportfile = "combined.csv", 
+                        exportfile = "combined.txt", 
                         directory = "./output", 
                         debug = FALSE) 
 {
-    print("combineData begins.")
-    dataTrain <- processData(datatype = "train",debug=TRUE)
-    dataTest <- processData(datatype = "test")
+    print("combineData: begins.")
+    dataTrain <- processData(datatype = "train",debug=debug)
+    dataTest <- processData(datatype = "test",debug=debug)
     dataCombined <- rbind(dataTrain,dataTest)
     print("combineData: write file.")
     if(!file.exists(directory)) { dir.create(directory)}
@@ -125,23 +126,40 @@ combineData <- function(data = NA,
 }
 
 tidyData <- function(data = NA, 
-                     exportfile = "tidy.csv", 
+                     exportfile = "tidy.txt", 
                      directory = "./output", 
                      debug = FALSE) 
 {
   library(reshape2)
-  dataAveraged <- NA
+  dataAveragedWithFactors <- NA
   if(length(data)>0) {
-    print("tidyData: begins.")
+    if( debug ) print("tidyData: begins.")
     #Melt the data.
     dataMolten <- reshape2::melt(data =data, id.vars=c("subject","activity"))
     #Cast it into a multidimensional array:  Activity-Subject by Variable.
     dataAveraged <- acast(dataMolten, activity + subject ~ variable,  mean)
+    #Split the generated rownames into 2 leading columns.
+    tidyrowsnames <- rownames(tidydata)
+    readyToSplit <- sub("_([^_]*)$","-\\1",tidyrowsnames,fixed = FALSE)
+    splitcols <- strsplit(readyToSplit,"-")
+    activity <- sapply(splitcols, function(x) { x[1] })
+    subject <- sapply(splitcols, function(x) { x[2] })
+    dataAveragedWithFactors <- cbind(activity,subject,dataAveraged)
     #Export data
     if(!file.exists(directory)) { dir.create(directory)}
-    write.table(dataAveraged,file=paste0(directory,"/",exportfile), row.name=FALSE)
+    write.table(dataAveragedWithFactors,file=paste0(directory,"/",exportfile), row.name=FALSE)
+    if( debug ) print("tidyData: complete.")
   } else {
     print("tidyData: No data provided.")
   }
-  dataAveraged
+  dataAveragedWithFactors
 }
+
+##########################################################################
+# Main
+##########################################################################
+print("run_analysis.R: begin.")
+data <- combineData(debug = TRUE)
+tidydata <- tidyData(data = data,debug = TRUE)
+print("run_analysis.R: complete.")
+tidydata
