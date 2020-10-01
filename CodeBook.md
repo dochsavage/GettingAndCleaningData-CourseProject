@@ -154,6 +154,7 @@ Processes a column name to improve readability according to a set of standard ru
 * Checks for empty data input.
 * Calls the reshape2::melt function to melt the data set.
 * Calls acast to cast the molten data into a multidimensional array, using the activity and subject columns as factors against the mean values of the variables. Note that dcast could not be used, as it cannot handle multidimensionality.
+* To retain the factors, the row names are split into activity and subject columns along the last underscore character, and column-bound to the data as the first 2 columns.
 * Writes the array out to the "output/tidy.txt" file.
 * Returns array.
 
